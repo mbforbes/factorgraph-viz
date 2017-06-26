@@ -14,8 +14,7 @@
     "typings": "^2.1.1"
   },
   "scripts": {
-    "compile": "tsc -p .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "tsc -p ."
   },
   "keywords": [
     "factorgraph",

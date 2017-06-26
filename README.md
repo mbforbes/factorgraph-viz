@@ -6,6 +6,9 @@ Factor graph visualization using d3.js.
 
 ### for github release
 
+- [ ] travis
+- [ ] example data (toy)
+- [ ] example data (real)
 - [ ] simple schema
 - [ ] simple config
 - [ ] readme
