@@ -1,19 +1,24 @@
 # factorgraph-viz
 
-Factor graph visualization using d3.js.
+[![Build Status](https://travis-ci.org/mbforbes/factorgraph-viz.svg?branch=master)](https://travis-ci.org/mbforbes/factorgraph-viz)
+[![license MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/mbforbes/factorgraph-viz/blob/master/LICENSE)
+
+This is a small visualization library written in Typescript for visualizing
+factor graphs. It uses the [d3-force](https://github.com/d3/d3-force/)
+component of [D3.js](https://d3js.org/).
 
 ## TODO
 
 ### for github release
 
-- [ ] travis
+- [x] travis
 - [ ] example data (toy)
 - [ ] example data (real)
 - [ ] simple schema
 - [ ] simple config
 - [ ] readme
-	- [ ] baddgggggeesss
-	- [ ] desc
+	- [x] baddgggggeesss
+	- [x] desc
 	- [ ] gif
 	- [ ] installation
 	- [ ] example usage
