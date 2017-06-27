@@ -2,7 +2,6 @@
 let svg = d3.select("svg"), width = +svg.attr("width"), height = +svg.attr("height");
 console.log('width: ' + width + ' ' + typeof width);
 console.log('height: ' + height + ' ' + typeof height);
-let facsize = 6;
 // exceptions are the special node, which always returns false
 function nodesubtype(desired) {
     return function (node) {
@@ -40,17 +39,17 @@ let colors = [
     d3.color('royalblue'),
     d3.color('lightslategray'),
 ];
-function color(d) {
+function color(none, unsureColor, unsureCutoff, values, d) {
     if (d.weights == null) {
-        return d3.color('whitesmoke');
+        return d3.color(none);
     }
     let max_idx = argmax(d.weights);
     let max_val = d.weights[max_idx];
-    // clamp unsure ones to gray
-    if (max_val < 0.4) {
-        return colors[2];
+    // clamp unsure ones to final value (hopefully something like grey)
+    if (max_val < unsureCutoff) {
+        return d3.color(unsureColor);
     }
-    return colors[argmax(d.weights)];
+    return values[argmax(d.weights)];
 }
 function nodename(d) {
     if (d.type == 'fac') {
@@ -66,7 +65,10 @@ function nodename(d) {
         return d.id;
     }
 }
-function build(data) {
+function preload(config) {
+    d3.json(config.data_filename, build.bind(null, config));
+}
+function build(config, data) {
     console.log('Got data:');
     console.log(data);
     function isolate(force, filter) {
@@ -79,19 +81,21 @@ function build(data) {
             .attr('transform', 'translate(20,20)')
             .text('correct: ' + data.stats.correct);
     }
-    let leftScale = 0 / 6;
-    let rightScale = 5 / 6;
-    let centerScale = 1 / 3;
+    let leftScale = config.position.leftScale;
+    let rightScale = config.position.rightScale;
+    let centerScale = config.position.centerScale;
     let sim = d3.forceSimulation(data.nodes)
         .force('charge', d3.forceManyBody().strength(-500))
         .force('link', d3.forceLink(data.links).id(function (d) { return d.id; }))
         .force('center', isolate(d3.forceCenter(width * centerScale, height / 2), nodefocus))
-        .force('left', isolate(d3.forceX(width * leftScale).strength(0.7), nodesubtype('frame')))
-        .force('right', isolate(d3.forceX(width * rightScale).strength(0.7), nodesubtype('noun')))
-        .force('up', isolate(d3.forceY(0).strength(0.1), nodesubtype('seed')))
-        .force('down', isolate(d3.forceY(height).strength(0.1), nodesubtype('xfactor')))
-        .force('middle', d3.forceY(height / 2).strength(0.1))
+        .force('left', isolate(d3.forceX(width * leftScale).strength(config.position.leftStrength), nodesubtype(config.position.leftSubtype)))
+        .force('right', isolate(d3.forceX(width * rightScale).strength(config.position.rightStrength), nodesubtype(config.position.rightSubtype)))
+        .force('up', isolate(d3.forceY(config.position.upScale * height).strength(config.position.upStrength), nodesubtype(config.position.upSubtype)))
+        .force('down', isolate(d3.forceY(config.position.downScale * height).strength(config.position.downStrength), nodesubtype(config.position.downSubtype)))
+        .force('middle', d3.forceY(height / 2).strength(config.position.middleStrength))
         .on('tick', ticked);
+    // use color config we've received to partially bind coloring function
+    let colorize = color.bind(null, config.color.none, config.color.unsureColor, config.color.unsureCutoff, config.color.values);
     // new for svg --- create the objects directly; then ticked just modifies
     // their positions rather than drawing them.
     let link = svg.append("g")
@@ -99,7 +103,7 @@ function build(data) {
         .selectAll("line")
         .data(data.links)
         .enter().append("line")
-        .attr("stroke", color);
+        .attr("stroke", colorize);
     let text = svg.append('g')
         .selectAll('text')
         .data(data.nodes)
@@ -111,8 +115,8 @@ function build(data) {
         .selectAll("circle")
         .data(data.nodes.filter(nodetype('rv')))
         .enter().append("circle")
-        .attr("r", 30)
-        .attr("fill", color)
+        .attr("r", config.size.rv)
+        .attr("fill", colorize)
         .call(d3.drag()
         .on("start", dragstarted)
         .on("drag", dragged)
@@ -122,13 +126,15 @@ function build(data) {
         .selectAll("rect")
         .data(data.nodes.filter(nodetype('fac')))
         .enter().append("rect")
-        .attr("fill", color)
-        .attr("width", facsize)
-        .attr("height", facsize)
+        .attr("fill", colorize)
+        .attr("width", config.size.factor)
+        .attr("height", config.size.factor)
         .call(d3.drag()
         .on("start", dragstarted)
         .on("drag", dragged)
         .on("end", dragended));
+    // Assumes RVs and factor are roughly the same size.
+    let bigger = Math.max(config.size.rv, config.size.factor);
     function ticked() {
         link
             .attr("x1", function (d) { return d.source.x; })
@@ -139,11 +145,11 @@ function build(data) {
             .attr("cx", function (d) { return d.x; })
             .attr("cy", function (d) { return d.y; });
         fac
-            .attr("x", function (d) { return d.x - facsize / 2; })
-            .attr("y", function (d) { return d.y - facsize / 2; });
+            .attr("x", function (d) { return d.x - config.size.factor / 2; })
+            .attr("y", function (d) { return d.y - config.size.factor / 2; });
         text
             .attr("transform", function (d) {
-            return "translate(" + (d.x + 5) + "," + (d.y + 5) + ")";
+            return "translate(" + (d.x + bigger) + "," + (d.y + 10) + ")";
         });
     }
     function dragsubject() {
@@ -170,4 +176,5 @@ function build(data) {
 }
 ;
 // execution starts here
-d3.json('data/examples/weight-king_vs_ship.json', build);
+d3.json('data/config/default.json', preload);
+// d3.json('data/examples/weight-king_vs_ship.json', build);
