@@ -1,8 +1,8 @@
 {
     "data_filename": "data/examples/weight-king_vs_ship.json",
     "size": {
-        "rv": 20,
-        "factor": 10
+        "rv": 8,
+        "factor": 8
     },
     "position": {
         "leftScale": 0.0,

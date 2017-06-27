@@ -1,10 +1,17 @@
+// factorgraph-viz
+//
+// Visualizing factor graphs using d3-force.
+//
+// author: mbforbes
 // glooobbaaalllsss
 let svg = d3.select("svg"), width = +svg.attr("width"), height = +svg.attr("height");
 console.log('width: ' + width + ' ' + typeof width);
 console.log('height: ' + height + ' ' + typeof height);
-// exceptions are the special node, which always returns false
+// Returns a function that will take FGNodes as arguments and return whether
+// they match the desired type.
 function nodesubtype(desired) {
     return function (node) {
+        // TODO: do we want to check the node's focus?
         // let focus = node.focus || false;
         let focus = false;
         return (!focus) && node.subtype === desired;
@@ -13,8 +20,8 @@ function nodesubtype(desired) {
 function nodefocus(node) {
     return node.focus || false;
 }
-function textclass(d) {
-    return d.type === 'rv' ? 'rvtext' : 'factext';
+function textclass(node) {
+    return node.type === 'rv' ? 'rvtext' : 'factext';
 }
 function nodetype(desired) {
     return function (node) {
@@ -34,11 +41,6 @@ function argmax(arr) {
     }
     return max_idx;
 }
-let colors = [
-    d3.color('tomato'),
-    d3.color('royalblue'),
-    d3.color('lightslategray'),
-];
 function color(none, unsureColor, unsureCutoff, values, d) {
     if (d.weights == null) {
         return d3.color(none);
@@ -65,9 +67,20 @@ function nodename(d) {
         return d.id;
     }
 }
+// preload is called once the config file is loaded. It extracts the data file
+// to load and then launches the process of loading the factor graph and
+// building it.
 function preload(config) {
+    // Load the data at the config-specified path. Pass along the config and the
+    // loaded data to the build(...) function to construct the graph.
     d3.json(config.data_filename, build.bind(null, config));
 }
+// build is the central function. It pareses the factor graph data and
+// constructs it.
+//
+// Note: the nodes here are technically FGNodes, but the horrendous type
+// massaging needed to make this work with d3's type hariness is not worth the
+// effort.
 function build(config, data) {
     console.log('Got data:');
     console.log(data);
@@ -152,6 +165,7 @@ function build(config, data) {
             return "translate(" + (d.x + bigger) + "," + (d.y + 10) + ")";
         });
     }
+    // The following functions allow for dragging interactivity.
     function dragsubject() {
         return sim.find(d3.event.x, d3.event.y);
     }
