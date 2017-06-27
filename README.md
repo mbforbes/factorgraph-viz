@@ -9,21 +9,58 @@ This is a small factor graph visualizer written in Typescript. It uses the
 
 ## Installation
 
+```bash
+# Install dependencies, including d3, which is required at runtime.
+npm install
+```
+
 A pre-compiled library is provided in `build/factorgraph-viz.js`.
 
 If you'd like to alter the code, do the following:
 
 ```bash
-# Install dependencies
-npm install
-
 # Edit the code, found in `src/`.
 
 # Run the Typescript compiler to produce `build/factorgraph-viz.js`
 npm run-script compile
-
-# Now, open `index.html` in a web browser.
 ```
+
+## Usage
+
+You'll need to run a web server locally to serve up your factor graph data.
+
+```bash
+# If you have python installed, this one-line script runs a server on port 8000.
+./server.sh
+
+# Now point your web browser to "localhost:8000" to view "index.html"
+```
+
+An example web page for viewing factor graphs is provided in `index.html`. The
+main components of it are:
+
+```html
+
+<!-- ... -->
+
+<style>
+  /* Define how you want the factor graph to be drawn here. */
+</style>
+
+<!-- ... -->
+
+<!-- d3 dependencies for d3-force -->
+<script src="node_modules/d3/build/d3.js"></script>
+
+<!-- stick an svg element in here for the factor graph visualizer to use -->
+<svg width="1500" height="750"></svg>
+
+<!-- the factor graph visualizer. it will load a factor graph from disk. -->
+<script src="build/factorgraph-viz.js"></script>
+
+<!-- ... -->
+```
+
 
 ## Contributing
 

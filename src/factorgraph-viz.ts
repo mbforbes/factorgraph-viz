@@ -89,9 +89,11 @@ function build(data: {nodes: any[], links: any[], stats: any}): void {
 		return force;
 	}
 
-	let stats = svg.append('g').append('text')
-		.attr('transform', 'translate(20,20)')
-		.text('correct: ' + data.stats.correct)
+	if (data.stats && data.stats.correct) {
+		let stats = svg.append('g').append('text')
+			.attr('transform', 'translate(20,20)')
+			.text('correct: ' + data.stats.correct);
+	}
 
 	let leftScale = 0/6;
 	let rightScale = 5/6;
@@ -104,7 +106,7 @@ function build(data: {nodes: any[], links: any[], stats: any}): void {
 		// .force('center', d3.forceCenter(width/2, height/2))
 		.force('center', isolate(d3.forceCenter(width*centerScale, height/2), nodefocus))
 		.force('left', isolate(d3.forceX(width*leftScale).strength(0.7), nodesubtype('frame')))
-		.force('right', isolate(d3.forceX(width*rightScale).strength(9), nodesubtype('noun')))
+		.force('right', isolate(d3.forceX(width*rightScale).strength(0.7), nodesubtype('noun')))
 		.force('up', isolate(d3.forceY(0).strength(0.1), nodesubtype('seed')))
 		.force('down', isolate(d3.forceY(height).strength(0.1), nodesubtype('xfactor')))
 		.force('middle', d3.forceY(height/2).strength(0.1))
@@ -132,7 +134,7 @@ function build(data: {nodes: any[], links: any[], stats: any}): void {
 		.selectAll("circle")
 		.data(data.nodes.filter(nodetype('rv')))
 		.enter().append("circle")
-			.attr("r", 3)
+			.attr("r", 30)
 			.attr("fill", color)
 			.call(d3.drag()
 				.on("start", dragstarted)
@@ -199,4 +201,4 @@ function build(data: {nodes: any[], links: any[], stats: any}): void {
 };
 
 // execution starts here
-d3.json('data/model-b-plus-verbsim/size-saw_dp_in.json', build);
+d3.json('data/examples/weight-king_vs_ship.json', build);

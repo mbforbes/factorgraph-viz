@@ -1,0 +1,9 @@
+{
+	"nodes": [
+		{"id": "throw_dp_into"},
+		{"id": "ball_vs_bin"}
+	],
+	"links": [
+		{"source": "throw_dp_into", "target": "ball_vs_bin"}
+	]
+}
