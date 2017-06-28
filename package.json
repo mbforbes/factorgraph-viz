@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "@types/d3": "~4.7",
+    "@types/node": "^8.0.4",
     "d3": "~4.7",
+    "jsonschema": "^1.1.1",
     "typescript": "^2.3.4",
     "typings": "^2.1.1"
   },

@@ -1,0 +1,43 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "definitions": {
+        "node": {
+            "type": "object",
+            "properties": {
+                "id": {"type": "string"},
+                "type": {
+                    "type": "string",
+                    "enum": ["rv", "fac"]
+                },
+                "subtype": {"type": "string"},
+                "specific": {"type": "string"},
+                "focus": {"type": "boolean"}
+            },
+            "required": ["id", "type"]
+        },
+        "link": {
+            "type": "object",
+            "properties": {
+                "source": {"type": "string"},
+                "target": {"type": "string"},
+                "weights": {
+                    "type": "array",
+                    "items": {"type": "number"}
+                }
+            },
+            "required": ["source", "target"]
+        }
+    },
+    "properties": {
+        "nodes": {
+            "type": "array",
+            "items": {"$ref": "#/definitions/node"}
+        },
+        "links": {
+            "type": "array",
+            "items": {"$ref": "#/definitions/link"}
+        }
+    },
+    "type": "object",
+    "required": ["nodes", "links"]
+}

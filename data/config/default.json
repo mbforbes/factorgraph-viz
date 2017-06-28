@@ -1,5 +1,5 @@
 {
-    "data_filename": "data/examples/weight-king_vs_ship.json",
+    "data_filename": "data/examples/playing.json",
     "size": {
         "rv": 8,
         "factor": 8
