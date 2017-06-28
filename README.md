@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.org/mbforbes/factorgraph-viz.svg?branch=master)](https://travis-ci.org/mbforbes/factorgraph-viz)
 [![license MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/mbforbes/factorgraph-viz/blob/master/LICENSE)
 
+![a demo of fg-visualizer in action](demo/fg-high.gif)
+
 This is a small factor graph visualizer written in Typescript. It uses the
 [d3-force](https://github.com/d3/d3-force/) component of
 [D3.js](https://d3js.org/).
