@@ -51,60 +51,6 @@ Edit that value to load a different factor graph.
 In order to produce a factor graph, you must save a JSON file that matches the
 required format.
 
-### Simple example
-
-Here is an example (`data/examples/03-simple-binaryfactor.json`):
-
-```json
-{
-	"nodes": [
-		{"id": "rv1", "type": "rv", "focus": true},
-		{"id": "rv2", "type": "rv"},
-		{"id": "fac1", "type": "fac", "subtype": "hello, world"}
-	],
-	"links": [
-		{"source": "rv1", "target": "fac1"},
-		{"source": "fac1", "target": "rv2"}
-	]
-}
-```
-
-Here is how the above example is rendered:
-
-![A rendering of the simple binary factor factor graph
-example](demo/simple-binaryfactor.png)
-
-### Colorized example
-
-You can also provide weights for the values of the random variables and the code
-will colorize them. The following example
-(`data/examples/04-simple-binaryfactor-color.json`) uses three values, with the
-colorization based on which of the values is the highest (red for the first,
-blue for the second, and grey for the third).
-
-```json
-{
-	"nodes": [
-		{"id": "rv1", "type": "rv", "weights": [0.7, 0.2, 0.1], "focus": true},
-		{"id": "rv2", "type": "rv", "weights": [0.1, 0.8, 0.1]},
-		{"id": "fac1", "type": "fac", "subtype": "i'm a unary factor",
-			"weights":[0.75, 0.1, 0.1]},
-		{"id": "fac2", "type": "fac", "subtype": "i'm a binary factor"}
-
-	],
-	"links": [
-		{"source": "rv1", "target": "fac1", "weights":[0.75, 0.1, 0.1]},
-		{"source": "rv1", "target": "fac2", "weights":[0.65, 0.35, 0.1]},
-		{"source": "fac2", "target": "rv2", "weights":[0.05, 0.9, 0.05]}
-	]
-}
-```
-
-Here is how it will be rendered:
-
-![A rendering of the simple binary factor colorized factor graph
-example](demo/simple-binaryfactor-color.png)
-
 ### Specification
 
 The code requires a JSON object with two properties, `nodes` and `links`.
@@ -142,6 +88,60 @@ node build/validator.js data/schema/factorgraph.json data/examples/02-simple-one
 # Check all files in a directory.
 node build/validator.js data/schema/factorgraph.json data/examples/
 ```
+
+### Simple example
+
+Here is an example (`data/examples/03-simple-binaryfactor.json`):
+
+```json
+{
+	"nodes": [
+		{"id": "rv1", "type": "rv", "focus": true},
+		{"id": "rv2", "type": "rv"},
+		{"id": "fac1", "type": "fac", "subtype": "hello, world"}
+	],
+	"links": [
+		{"source": "rv1", "target": "fac1"},
+		{"source": "fac1", "target": "rv2"}
+	]
+}
+```
+
+Here is how the above example is rendered:
+
+![A rendering of the simple binary factor factor graph
+example](demo/simple-binaryfactor.png)
+
+### Colorized example
+
+The following example (`data/examples/04-simple-binaryfactor-color.json`)
+provides weights for the values of the random variables. It uses three values.
+The colorization is based on the index of the greatest value. The default
+colorization scheme uses red for the first value, blue for the second, and grey
+for the third.
+
+```json
+{
+	"nodes": [
+		{"id": "rv1", "type": "rv", "weights": [0.7, 0.2, 0.1], "focus": true},
+		{"id": "rv2", "type": "rv", "weights": [0.1, 0.8, 0.1]},
+		{"id": "fac1", "type": "fac", "subtype": "i'm a unary factor",
+			"weights":[0.75, 0.1, 0.1]},
+		{"id": "fac2", "type": "fac", "subtype": "i'm a binary factor"}
+
+	],
+	"links": [
+		{"source": "rv1", "target": "fac1", "weights":[0.75, 0.1, 0.1]},
+		{"source": "rv1", "target": "fac2", "weights":[0.65, 0.35, 0.1]},
+		{"source": "fac2", "target": "rv2", "weights":[0.05, 0.9, 0.05]}
+	]
+}
+```
+
+Here is how it will be rendered:
+
+![A rendering of the simple binary factor colorized factor graph
+example](demo/simple-binaryfactor-color.png)
 
 ## Customization
 
