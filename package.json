@@ -16,7 +16,8 @@
     "typings": "^2.1.1"
   },
   "scripts": {
-    "compile": "tsc -p src/ && tsc -p scripts/validate/"
+    "compile": "tsc -p src/ && tsc -p scripts/validate/",
+    "test": "./scripts/test.sh"
   },
   "keywords": [
     "factorgraph",
