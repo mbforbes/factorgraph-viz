@@ -1,0 +1,11 @@
+{
+	"nodes": [
+		{"id": "rv1", "type": "rv", "focus": true},
+		{"id": "rv2", "type": "rv"},
+		{"id": "fac1", "type": "fac", "subtype": "hello, world"}
+	],
+	"links": [
+		{"source": "rv1", "target": "fac1"},
+		{"source": "fac1", "target": "rv2"}
+	]
+}
