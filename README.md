@@ -49,9 +49,11 @@ Edit that value to load a different factor graph.
 ## Factor graph spec
 
 In order to produce a factor graph, you must save a JSON file that matches the
-required format. Here is an example from
-`data/examples/03-simple-binaryfactor.json`:
+required format.
 
+### Simple example
+
+Here is an example (`data/examples/03-simple-binaryfactor.json`):
 
 ```json
 {
@@ -67,40 +69,91 @@ required format. Here is an example from
 }
 ```
 
-The code requires a JSON object with two properties, `nodes` and `links`.
-
-Every `node` needs a unique `id` property and a `type` property, which can be
-either `"rv"` (random variable) or `"fac"` (factor). For nodes with type `"rv"`,
-their `id` will be displayed in text next to them. For nodes with type `"fac"`,
-an additional property `subtype` can be provided, which will be displayed as
-text next to them.
-
-Each `link` must have a `source` and `target` property. Each of these must match
-an `id` of one of the `node`s.
-
 Here is how the above example is rendered:
 
 ![A rendering of the simple binary factor factor graph
 example](demo/simple-binaryfactor.png)
+
+### Colorized example
+
+You can also provide weights for the values of the random variables and the code
+will colorize them. The following example
+(`data/examples/04-simple-binaryfactor-color.json`) uses three values, with the
+colorization based on which of the values is the highest (red for the first,
+blue for the second, and grey for the third).
+
+```json
+{
+	"nodes": [
+		{"id": "rv1", "type": "rv", "weights": [0.7, 0.2, 0.1], "focus": true},
+		{"id": "rv2", "type": "rv", "weights": [0.1, 0.8, 0.1]},
+		{"id": "fac1", "type": "fac", "subtype": "i'm a unary factor",
+			"weights":[0.75, 0.1, 0.1]},
+		{"id": "fac2", "type": "fac", "subtype": "i'm a binary factor"}
+
+	],
+	"links": [
+		{"source": "rv1", "target": "fac1", "weights":[0.75, 0.1, 0.1]},
+		{"source": "rv1", "target": "fac2", "weights":[0.65, 0.35, 0.1]},
+		{"source": "fac2", "target": "rv2", "weights":[0.05, 0.9, 0.05]}
+	]
+}
+```
+
+Here is how it will be rendered:
+
+![A rendering of the simple binary factor colorized factor graph
+example](demo/simple-binaryfactor-color.png)
+
+### Specification
+
+The code requires a JSON object with two properties, `nodes` and `links`.
+
+- Every `node` needs a unique `id` property and a `type` property. The `type`
+  property can be either `"rv"` (random variable) or `"fac"` (factor). For nodes
+  with `"type": "rv"`, their `id` will be displayed in text next to them. For
+  nodes with `"type": "fac"`, an additional property `subtype` can be provided,
+  which will be displayed as text next to them. The property `"focus": true` can
+  be added to any node  and it will centered in the display.
+
+- Each `link` must have a `source` and `target` property. Both `source` and
+  `target` must match an `id` of one of the `node`s.
+
+A `weights` property can be added to any `node` or `link` and the code will
+colorize that component accordingly. The value for `weights` should be an array
+of numbers, one for each value of the relevant random variable. The code will do
+an argmax and colorize based on the index of the highest weight. To customize
+the colorization scheme, see below in [customization](#customization).
+
+### Schema validation
+
+To aid in creating valid factor graph JSON files, a schema file is provided in
+`data/schema/factorgraph.json`. In addition, a simple JSON schema validation
+tool (which uses [`jsonschema`](https://www.npmjs.com/package/jsonschema)) is
+provided in `build/validator.js`. You can use it to check whether your files
+conform to the spec required by this library.
+
+Don't forget to run `npm install` first.
+
+```bash
+# Check an individual file.
+node build/validator.js data/schema/factorgraph.json data/examples/02-simple-onenode.json
+
+# Check all files in a directory.
+node build/validator.js data/schema/factorgraph.json data/examples/
+```
 
 ## Customization
 
 TODO
 
 ```html
-
-<!-- ... -->
-
-<!-- d3 dependencies for d3-force -->
-<script src="node_modules/d3/build/d3.js"></script>
+...
 
 <!-- stick an svg element in here for the factor graph visualizer to use -->
 <svg width="1500" height="750"></svg>
 
-<!-- the factor graph visualizer. it will load a factor graph from disk. -->
-<script src="build/factorgraph-viz.js"></script>
-
-<!-- ... -->
+...
 ```
 
 ## Examples

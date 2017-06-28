@@ -1,0 +1,15 @@
+{
+	"nodes": [
+		{"id": "rv1", "type": "rv", "weights": [0.7, 0.2, 0.1], "focus": true},
+		{"id": "rv2", "type": "rv", "weights": [0.1, 0.8, 0.1]},
+		{"id": "fac1", "type": "fac", "subtype": "i'm a unary factor",
+			"weights":[0.75, 0.1, 0.1]},
+		{"id": "fac2", "type": "fac", "subtype": "i'm a binary factor"}
+
+	],
+	"links": [
+		{"source": "rv1", "target": "fac1", "weights":[0.75, 0.1, 0.1]},
+		{"source": "rv1", "target": "fac2", "weights":[0.65, 0.35, 0.1]},
+		{"source": "fac2", "target": "rv2", "weights":[0.05, 0.9, 0.05]}
+	]
+}
