@@ -39,7 +39,7 @@ Visiting `localhost:8000` will show `index.html`. The code loads the config file
 
 ```json
 {
-  "data_filename": "data/examples/06-complex-size-threw_d.json",
+  "data_filename": "data/examples/07-complex-size-threw_d.json",
   ...
 }
 ```
@@ -71,6 +71,8 @@ of numbers, one for each value of the relevant random variable. The code will do
 an argmax and colorize based on the index of the highest weight. To customize
 the colorization scheme, see below in [customization](#customization).
 
+See below for [examples](#Examples) of valid factor graph JSON files.
+
 ### Schema validation
 
 To aid in creating valid factor graph JSON files, a schema file is provided in
@@ -89,9 +91,12 @@ node build/validator.js data/schema/factorgraph.json data/examples/02-simple-one
 node build/validator.js data/schema/factorgraph.json data/examples/
 ```
 
+## Examples
+
 ### Simple example
 
-Here is an example (`data/examples/03-simple-binaryfactor.json`):
+Here is a simple example (`data/examples/03-simple-binaryfactor.json`). It
+contains two random variables and one binary factor that connects them.
 
 ```json
 {
@@ -118,7 +123,8 @@ The following example (`data/examples/04-simple-binaryfactor-color.json`)
 provides weights for the values of the random variables. It uses three values.
 The colorization is based on the index of the greatest value. The default
 colorization scheme uses red for the first value, blue for the second, and grey
-for the third.
+for the third. It also adds a unary factor to the previous example to show that
+factors can also receive colors.
 
 ```json
 {
@@ -143,22 +149,46 @@ Here is how it will be rendered:
 ![A rendering of the simple binary factor colorized factor graph
 example](demo/simple-binaryfactor-color.png)
 
+### Additional examples
+
+More complex examples are provided in `data/examples/`. They are ordered from
+simple to complex.
+
 ## Customization
 
-TODO
+There are three places to configure `factorgraph-viz` without recompiling it:
+(1) in the config JSON file (found by default in `data/config/default.json`),
+(2) the CSS file (found by default in `css/default.css`), (3) the HTML file
+(`index.html`).
 
-```html
-...
 
-<!-- stick an svg element in here for the factor graph visualizer to use -->
-<svg width="1500" height="750"></svg>
+### `data/config/default.json`
 
-...
-```
+This file is where all of the configuration is loaded. It specifies which factor
+graph JSON file to load, how large to render random variables and factors, the
+strength and location of the positioning forces that alter the layout of the
+factor graph, and the colorization scheme that is applied when the `weights`
+property is provided.
 
-## Examples
+More detail is given about the configuration options at what they mean in the
+Typescript type that loads this object, which is located in
+[`src/config.ts`](https://github.com/mbforbes/factorgraph-viz/blob/master/src/config.ts).
 
-TODO
+### `css/default.css`
+
+Due to how SVG works, CSS cannot control the sizing of the random variables or
+factors (which is why those are defined in the JSON config file). However, the
+various strokes for the factor graph shapes and the all of the font and styling
+options for the text are specified in this CSS file.
+
+### `index.html`
+
+The HTML file is minimal, so there are probably only a few reasons why you might
+want to configure it: (1) To change the location of `d3` (by default it is
+expected to be found in `node_modules/d3/build/d3.js`), (2) to change the size
+of the SVG element (by default it is `1024 x 768`), (3) To change the CSS file
+loaded (by default `css/default.css`), (4) To change the `factorgraph-viz`
+library loaded (by default `build/factorgraph-viz.js`).
 
 ## Contributing
 
@@ -207,42 +237,4 @@ this project. Here are some ideas:
 
 ## TODO
 
-### for github release
-
-- [x] travis
-- [x] example data (toy)
-- [x] example data (real)
-- [x] simple schema
-- [x] simple config
-- [ ] readme
-	- [x] baddgggggeesss
-	- [x] desc
-	- [x] gif
-	- [x] installation
-	- [ ] schema
-	- [x] contributing
-	- [x] see also
-
-### general features
-
-- [x] grey out binary factors to avoid confusion
-- [x] add text labels to facs
-- [x] include attr in exported format
-- [x] export data w/ all factors
-	- [x] seed
-	- [x] sel pref
-	- [x] verb sim
-	- [x] frame sim
-	- [x] attr sim
-	- [x] obj sim
-- [x] ensure all factors represented and nodes connected in graph
-- [x] make it visually comprehensible (incl. attempt @ 'focus' node if possible)
-- [x] determine correct binary factor color + label (e.g. 'rev'); will need to
-      re-export data for this
-- [x] get model to best config (B) + re-run to confirm
-- [x] dump export all frames as separate jsons
 - [ ] let frontend select frame to load
-- [ ] output stats to render in e.g. top left:
-	- [ ] frame
-	- [n] decision + correct / incorrect (do later)
-	- [n] count of each factor (do later)
