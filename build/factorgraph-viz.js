@@ -119,6 +119,17 @@ function color(none, unsureColor, unsureCutoff, values, d) {
 /// <reference path="config.ts" />
 /// <reference path="node.ts" />
 /// <reference path="util.ts" />
+function appendText(svg) {
+    let count = 1;
+    return function (label, d) {
+        if (d) {
+            svg.append('g').append('text')
+                .attr('transform', 'translate(20,' + count * 20 + ')')
+                .text(label + ': ' + d);
+            count += 1;
+        }
+    };
+}
 /**
  *
  * build is the central function of this codebase. It pareses the factor graph
@@ -141,10 +152,16 @@ function build(config, data) {
         force.initialize = function () { initialize.call(force, data.nodes.filter(filter)); };
         return force;
     }
-    if (data.stats && data.stats.correct) {
-        let stats = svg.append('g').append('text')
-            .attr('transform', 'translate(20,20)')
-            .text('correct: ' + data.stats.correct);
+    // TODO: We can actually extract most of this information. Stats should only
+    // be used to provide additional info that can't be extracted from the graph
+    // structure.
+    let appeneder = appendText(svg);
+    if (data.stats) {
+        appeneder('correct', data.stats.correct);
+        appeneder('random variables', data.stats.n_rvs);
+        appeneder('factors', data.stats.n_facs);
+        appeneder('focus', data.stats.focus);
+        appeneder('correct', data.stats.correct);
     }
     let leftScale = config.position.leftScale;
     let rightScale = config.position.rightScale;
