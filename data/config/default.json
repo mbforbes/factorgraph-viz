@@ -1,5 +1,5 @@
 {
-    "data_filename": "data/examples/06-complex-size-threw_d.json",
+    "data_filename": "data/examples/03-simple-binaryfactor.json",
     "size": {
         "rv": 8,
         "factor": 8

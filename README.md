@@ -11,43 +11,83 @@ This is a small factor graph visualizer written in Typescript. It uses the
 
 ## Installation
 
+You can install `d3` (which is required at runtime) as well as the types and
+schema dependencies (which is required to update the code) all at once.
+
 ```bash
-# Install dependencies, including d3, which is required at runtime.
 npm install
 ```
 
-A pre-compiled library is provided in `build/factorgraph-viz.js`.
-
-If you'd like to alter the code, do the following:
+A pre-compiled library is provided in `build/factorgraph-viz.js`. You can also
+produce a fresh version:
 
 ```bash
-# Edit the code, found in `src/`.
-
-# Run the Typescript compiler to produce `build/factorgraph-viz.js`
 npm run-script compile
 ```
 
 ## Usage
 
-You'll need to run a web server locally to serve up your factor graph data.
+You'll need to run a web server locally to serve up your factor graph data. The
+provided script requires python and creates a server on port 8000.
 
 ```bash
-# If you have python installed, this one-line script runs a server on port 8000.
 ./server.sh
-
-# Now point your web browser to "localhost:8000" to view "index.html"
 ```
 
-An example web page for viewing factor graphs is provided in `index.html`. The
-main components of it are:
+Visiting `localhost:8000` will show `index.html`. The code loads the config file
+`data/config/default.json`, which specifies the factor graph to use:
+
+```json
+{
+  "data_filename": "data/examples/06-complex-size-threw_d.json",
+  ...
+}
+```
+
+Edit that value to load a different factor graph.
+
+## Factor graph spec
+
+In order to produce a factor graph, you must save a JSON file that matches the
+required format. Here is an example from
+`data/examples/03-simple-binaryfactor.json`:
+
+
+```json
+{
+	"nodes": [
+		{"id": "rv1", "type": "rv", "focus": true},
+		{"id": "rv2", "type": "rv"},
+		{"id": "fac1", "type": "fac", "subtype": "hello, world"}
+	],
+	"links": [
+		{"source": "rv1", "target": "fac1"},
+		{"source": "fac1", "target": "rv2"}
+	]
+}
+```
+
+The code requires a JSON object with two properties, `nodes` and `links`.
+
+Every `node` needs a unique `id` property and a `type` property, which can be
+either `"rv"` (random variable) or `"fac"` (factor). For nodes with type `"rv"`,
+their `id` will be displayed in text next to them. For nodes with type `"fac"`,
+an additional property `subtype` can be provided, which will be displayed as
+text next to them.
+
+Each `link` must have a `source` and `target` property. Each of these must match
+an `id` of one of the `node`s.
+
+Here is how the above example is rendered:
+
+![A rendering of the simple binary factor factor graph
+example](demo/simple-binaryfactor.png)
+
+## Customization
+
+TODO
 
 ```html
-
-<!-- ... -->
-
-<style>
-  /* Define how you want the factor graph to be drawn here. */
-</style>
 
 <!-- ... -->
 
@@ -63,6 +103,9 @@ main components of it are:
 <!-- ... -->
 ```
 
+## Examples
+
+TODO
 
 ## Contributing
 
