@@ -40,13 +40,13 @@ Visiting `localhost:8000` will show `index.html`. The code loads the config file
 ```json
 {
   "data_filename": "data/examples/07-complex-size-threw_d.json",
-  ...
+  // ...
 }
 ```
 
 Edit that value to load a different factor graph.
 
-## Factor graph spec
+## Factor graph format
 
 In order to produce a factor graph, you must save a JSON file that matches the
 required format.
@@ -71,7 +71,7 @@ of numbers, one for each value of the relevant random variable. The code will do
 an argmax and colorize based on the index of the highest weight. To customize
 the colorization scheme, see below in [customization](#customization).
 
-See below for [examples](#Examples) of valid factor graph JSON files.
+See below for [examples](#examples) of valid factor graph JSON files.
 
 ### Schema validation
 
@@ -100,15 +100,15 @@ contains two random variables and one binary factor that connects them.
 
 ```json
 {
-	"nodes": [
-		{"id": "rv1", "type": "rv", "focus": true},
-		{"id": "rv2", "type": "rv"},
-		{"id": "fac1", "type": "fac", "subtype": "hello, world"}
-	],
-	"links": [
-		{"source": "rv1", "target": "fac1"},
-		{"source": "fac1", "target": "rv2"}
-	]
+   "nodes": [
+      {"id": "rv1", "type": "rv", "focus": true},
+      {"id": "rv2", "type": "rv"},
+      {"id": "fac1", "type": "fac", "subtype": "hello, world"}
+   ],
+   "links": [
+      {"source": "rv1", "target": "fac1"},
+      {"source": "fac1", "target": "rv2"}
+   ]
 }
 ```
 
@@ -123,24 +123,23 @@ The following example (`data/examples/04-simple-binaryfactor-color.json`)
 provides weights for the values of the random variables. It uses three values.
 The colorization is based on the index of the greatest value. The default
 colorization scheme uses red for the first value, blue for the second, and grey
-for the third. It also adds a unary factor to the previous example to show that
-factors can also receive colors.
+for the third. This example also adds a unary factor to show that factors can
+also have weights (and thus colors).
 
 ```json
 {
-	"nodes": [
-		{"id": "rv1", "type": "rv", "weights": [0.7, 0.2, 0.1], "focus": true},
-		{"id": "rv2", "type": "rv", "weights": [0.1, 0.8, 0.1]},
-		{"id": "fac1", "type": "fac", "subtype": "i'm a unary factor",
-			"weights":[0.75, 0.1, 0.1]},
-		{"id": "fac2", "type": "fac", "subtype": "i'm a binary factor"}
-
-	],
-	"links": [
-		{"source": "rv1", "target": "fac1", "weights":[0.75, 0.1, 0.1]},
-		{"source": "rv1", "target": "fac2", "weights":[0.65, 0.35, 0.1]},
-		{"source": "fac2", "target": "rv2", "weights":[0.05, 0.9, 0.05]}
-	]
+   "nodes": [
+      {"id": "rv1", "type": "rv", "weights": [0.7, 0.2, 0.1], "focus": true},
+      {"id": "rv2", "type": "rv", "weights": [0.1, 0.8, 0.1]},
+      {"id": "fac1", "type": "fac", "subtype": "i'm a unary factor",
+         "weights":[0.75, 0.1, 0.1]},
+      {"id": "fac2", "type": "fac", "subtype": "i'm a binary factor"}
+   ],
+   "links": [
+      {"source": "rv1", "target": "fac1", "weights":[0.75, 0.1, 0.1]},
+      {"source": "rv1", "target": "fac2", "weights":[0.65, 0.35, 0.1]},
+      {"source": "fac2", "target": "rv2", "weights":[0.05, 0.9, 0.05]}
+   ]
 }
 ```
 
@@ -151,7 +150,7 @@ example](demo/simple-binaryfactor-color.png)
 
 ### Additional examples
 
-More complex examples are provided in `data/examples/`. They are ordered from
+More examples are provided in `data/examples/`. They are ordered from
 simple to complex.
 
 ## Customization
@@ -195,33 +194,13 @@ library loaded (by default `build/factorgraph-viz.js`).
 There's plenty of low-hanging fruit to work on if you'd like to contribute to
 this project. Here are some ideas:
 
+- [ ] Allow the frontend to select the factor graph JSON file to load
+
 - [ ] Make an axis-specific [many body
-  force](https://github.com/d3/d3-force#forceManyBody). This project currently
-  uses an extremely high fixed-x force to position subsets of nodes, and relies
-  on a many body force to space the nodes along that x position. This is done
-  because the text attached to each node means they need to be spaced much
-  farther horizontally than vertically so one node's text doesn't overlap and
-  obscure other nodes' text. Using such a strong force makes the simulation
-  unstable and look strange at start-up. A better solution would be to have an
-  axis-specific many body force that only tries to separate nodes along one
-  dimension. Then, a much weaker fixed-x force could be combined with a y-only
-  many body force to separate the nodes vertically.
+  force](https://github.com/d3/d3-force#forceManyBody). This could help separate
+  the nodes vertically so that the text doesn't overlap.
 
-- [ ] Decouple the graph display configuration from the generic graph
-  rendering. The code is currently biased towards rendering a specific type of
-  nodes (random variables that primarily fluctuate between two semantically
-  opposite values) and graphs (a known set of named subgraphs). Having at least
-  two reference configs for general graph display would be a good starting
-  point for allowing others to more easily adapt this code to their needs. This
-  could involve a simple display API that maps node property selectors to sets
-  of forces.
-
-- [ ] Build a more robust layout scheme. Right now, the code assumes a large
-  display, and doesn't scale well to smaller displays (certainly not mobile) or
-  constrained dimensions for printing. This would involve playing with the
-  forces and a few example datasets to ensure that data is still
-  distinguishable when its layout shifts to accommodate difference sizes and
-  amounts of scrolling.
+- [ ] Compute stats of the factor graph on-the-fly and display them
 
 ## See also
 
@@ -234,7 +213,3 @@ this project. Here are some ideas:
 
 - [verbphysics](https://github.com/uwnlp/verbphysics) is a project that uses
   factor graphs. It makes use of both `py-factorgraph` and `factorgraph-viz`.
-
-## TODO
-
-- [ ] let frontend select frame to load
