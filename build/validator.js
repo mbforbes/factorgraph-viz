@@ -9,6 +9,10 @@
 // validate.ts is a tiny wrapper around the `jsonschema` library to validate
 // schemas on the command line using node.js.
 //
+//
+// usage:
+//     node build/validator.js <schema_file> <dir_or_json_file>
+//
 const Validator = require('jsonschema').Validator;
 const fs = require('fs');
 const path = require('path');

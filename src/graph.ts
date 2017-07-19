@@ -150,8 +150,8 @@ function build(config: Config, data: {nodes: any[], links: any[], stats: any}): 
 			.attr("x2", function(d) { return d.target.x; })
 			.attr("y2", function(d) { return d.target.y; });
 		node
-			.attr("cx", function(d) { return d.x; })
-			.attr("cy", function(d) { return d.y; });
+			.attr("cx", function(d: any) { return d.x; })
+			.attr("cy", function(d: any) { return d.y; });
 
 		fac
 			.attr("x", function(d) { return d.x - config.size.factor/2; })

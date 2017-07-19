@@ -192,17 +192,18 @@ function build(config, data) {
         .enter().append('text')
         .attr('class', textclass)
         .text(nodename);
-    let node = svg.append("g")
+    let nodeSelection = svg.append("g")
         .attr("class", "nodes")
         .selectAll("circle")
-        .data(data.nodes.filter(nodetype('rv')))
-        .enter().append("circle")
+        .data(data.nodes.filter(nodetype('rv')));
+    let node = nodeSelection.enter().append("circle")
         .attr("r", config.size.rv)
         .attr("fill", colorize)
         .call(d3.drag()
         .on("start", dragstarted)
         .on("drag", dragged)
         .on("end", dragended));
+    // nodeSelection.exit().remove();
     let fac = svg.append("g")
         .attr("class", "facs")
         .selectAll("rect")
@@ -272,13 +273,29 @@ function build(config, data) {
 //
 /// <reference path="config.ts" />
 /// <reference path="graph.ts" />
+let cacheConfig;
 // preload is called once the config file is loaded. It extracts the data file
 // to load and then launches the process of loading the factor graph and
 // building it.
 function preload(config) {
     // Load the data at the config-specified path. Pass along the config and the
     // loaded data to the build(...) function to construct the graph.
+    cacheConfig = config;
     d3.json(config.data_filename, build.bind(null, config));
+}
+// remove everything from the svg
+function destroy() {
+    // destroy all svg children
+    let svg = document.getElementById("fg-svg");
+    while (svg.firstChild) {
+        svg.removeChild(svg.firstChild);
+    }
+}
+// call to load a new one
+function load() {
+    destroy();
+    let fn = 'data/examples/05-complex-weight-king_vs_ship.json';
+    d3.json(fn, build.bind(null, cacheConfig));
 }
 // execution starts here
 d3.json('data/config/default.json', preload);
