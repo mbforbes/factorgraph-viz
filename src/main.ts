@@ -14,6 +14,7 @@
 /// <reference path="graph.ts" />
 
 // Constants
+let FG_NAME_ELEMENT_ID = 'fg-title';
 let SVG_ELEMENT_ID = 'fg-svg';
 let USER_INPUT_ID = 'userInput';
 let SUGGESTIONS_ELEMENT_ID = 'suggestions';
@@ -41,13 +42,20 @@ function preload(factorgraphFns: string[]) {
 }
 
 /**
+ * Helper to clear all children of a DOM node.
+ * @param el
+ */
+function clearChildren(el: HTMLElement): void {
+	while (el.firstChild) {
+		el.removeChild(el.firstChild);
+	}
+}
+
+/**
  * Removes everything from within the svg.
  */
 function destroy(): void {
-	let svg = document.getElementById(SVG_ELEMENT_ID);
-	while (svg.firstChild) {
-		svg.removeChild(svg.firstChild);
-	}
+	clearChildren(document.getElementById(SVG_ELEMENT_ID));
 }
 
 /**
@@ -60,33 +68,48 @@ function load(fn: string): void {
 }
 
 /**
+ * Loads factor graph found in `fn` if it's in our list of valid factor graph
+ * names.
+ * @param name
+ */
+function maybeLoad(name: string): void {
+	if (cacheFactorgraphFns.indexOf(name) != -1) {
+		document.getElementById(FG_NAME_ELEMENT_ID).innerText = name;
+		load(cacheConfig.data_dir + name + '.json');
+	}
+}
+
+/**
  * Called every time the user text box changes its content.
  */
 function userTypes(): void {
 	let inp = (document.getElementById(USER_INPUT_ID) as HTMLInputElement).value;
 	// Prefix filter. Don't show anything with blank input
-	let optsStr = '';
+	let opts = [];
 	if (inp.length > 0) {
-		optsStr = cacheFactorgraphFns.filter(fn => fn.startsWith(inp)).join(' ');
+		opts = cacheFactorgraphFns.filter(fn => fn.startsWith(inp));
 	}
 
-	// Fill suggestions with text.
-	// console.log('user input: "' + inp + '"');
-	// console.log('options matched: ' + optsStr);
+	// Clear any existing suggestions.
 	let sug = document.getElementById(SUGGESTIONS_ELEMENT_ID);
-	sug.innerText = optsStr;
+	clearChildren(sug);
+
+	// Add suggestions.
+	for (let opt of opts) {
+		let el = document.createElement('button');
+		el.className = 'suggestion';
+		el.innerText = opt;
+		el.setAttribute('onclick', 'maybeLoad("' + opt + '");');
+		sug.appendChild(el);
+	}
 }
 
 /**
  * Called when the user submits the text box (presses enter or clicks button).
+ * Always returns false so we don't do a post.
  */
 function userSubmits(): boolean {
-	let inp = (document.getElementById(USER_INPUT_ID) as HTMLInputElement).value;
-	if (cacheFactorgraphFns.indexOf(inp) != -1) {
-		load(cacheConfig.data_dir + inp + '.json');
-	}
-
-	// always return false so that we don't do a POST
+	maybeLoad((document.getElementById(USER_INPUT_ID) as HTMLInputElement).value)
 	return false;
 }
 

@@ -21,6 +21,15 @@
 	font-size: 0.7em;
 }
 
-p#suggestions {
-	color: grey;
+button.suggestion {	
+	background-color: lightgray;
+	margin: 5px;
+	padding: 5px;
+	border: none;
+	border-radius: 8px;
+}
+
+button.suggestion:hover {
+	background-color: lightslategray;
+	cursor: pointer;
 }

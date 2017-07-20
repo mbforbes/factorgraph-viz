@@ -157,7 +157,6 @@ function build(config, data) {
     // structure.
     let appeneder = appendText(svg);
     if (data.stats) {
-        appeneder('correct', data.stats.correct);
         appeneder('random variables', data.stats.n_rvs);
         appeneder('factors', data.stats.n_facs);
         appeneder('focus', data.stats.focus);
@@ -273,6 +272,7 @@ function build(config, data) {
 /// <reference path="config.ts" />
 /// <reference path="graph.ts" />
 // Constants
+let FG_NAME_ELEMENT_ID = 'fg-title';
 let SVG_ELEMENT_ID = 'fg-svg';
 let USER_INPUT_ID = 'userInput';
 let SUGGESTIONS_ELEMENT_ID = 'suggestions';
@@ -296,13 +296,19 @@ function preload(factorgraphFns) {
     cacheFactorgraphFns = factorgraphFns;
 }
 /**
+ * Helper to clear all children of a DOM node.
+ * @param el
+ */
+function clearChildren(el) {
+    while (el.firstChild) {
+        el.removeChild(el.firstChild);
+    }
+}
+/**
  * Removes everything from within the svg.
  */
 function destroy() {
-    let svg = document.getElementById(SVG_ELEMENT_ID);
-    while (svg.firstChild) {
-        svg.removeChild(svg.firstChild);
-    }
+    clearChildren(document.getElementById(SVG_ELEMENT_ID));
 }
 /**
  * Loads factor graph found in `fn`.
@@ -313,30 +319,44 @@ function load(fn) {
     d3.json(fn, build.bind(null, cacheConfig));
 }
 /**
+ * Loads factor graph found in `fn` if it's in our list of valid factor graph
+ * names.
+ * @param name
+ */
+function maybeLoad(name) {
+    if (cacheFactorgraphFns.indexOf(name) != -1) {
+        document.getElementById(FG_NAME_ELEMENT_ID).innerText = name;
+        load(cacheConfig.data_dir + name + '.json');
+    }
+}
+/**
  * Called every time the user text box changes its content.
  */
 function userTypes() {
     let inp = document.getElementById(USER_INPUT_ID).value;
     // Prefix filter. Don't show anything with blank input
-    let optsStr = '';
+    let opts = [];
     if (inp.length > 0) {
-        optsStr = cacheFactorgraphFns.filter(fn => fn.startsWith(inp)).join(' ');
+        opts = cacheFactorgraphFns.filter(fn => fn.startsWith(inp));
     }
-    // Fill suggestions with text.
-    // console.log('user input: "' + inp + '"');
-    // console.log('options matched: ' + optsStr);
+    // Clear any existing suggestions.
     let sug = document.getElementById(SUGGESTIONS_ELEMENT_ID);
-    sug.innerText = optsStr;
+    clearChildren(sug);
+    // Add suggestions.
+    for (let opt of opts) {
+        let el = document.createElement('button');
+        el.className = 'suggestion';
+        el.innerText = opt;
+        el.setAttribute('onclick', 'maybeLoad("' + opt + '");');
+        sug.appendChild(el);
+    }
 }
 /**
  * Called when the user submits the text box (presses enter or clicks button).
+ * Always returns false so we don't do a post.
  */
 function userSubmits() {
-    let inp = document.getElementById(USER_INPUT_ID).value;
-    if (cacheFactorgraphFns.indexOf(inp) != -1) {
-        load(cacheConfig.data_dir + inp + '.json');
-    }
-    // always return false so that we don't do a POST
+    maybeLoad(document.getElementById(USER_INPUT_ID).value);
     return false;
 }
 // execution starts here

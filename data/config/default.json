@@ -1,6 +1,6 @@
 {
     "data_dir": "data/examples/",
-    "data_filenames": "data/examples/options.json",
+    "data_filenames": "data/options/example-list.json",
     "size": {
         "rv": 8,
         "factor": 8
