@@ -9,12 +9,18 @@
 	<script src="node_modules/d3/build/d3.js"></script>
 
 	<!-- stick an svg element in here for the factor graph visualizer to use -->
-	<svg id="fg-svg" width="1024" height="768"></svg>
+	<svg id="fg-svg" width="800" height="600"></svg>
 
 	<!-- the factor graph visualizer. it will load a factor graph from disk. -->
 	<script src="build/factorgraph-viz.js"></script>
 
 	<!-- interactivity -->
-	<button onclick="load();">Load</button>
+	<form onsubmit="return userSubmits();">
+	<input id="userInput" type="text" oninput="userTypes()"></input>
+	<button type="submit">Load</button>
+	<p style="font-weight: bold;">Suggestions:</p>
+	<p id="suggestions"></p>
+	</form>
+
 </body>
 </html>

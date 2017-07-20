@@ -11,9 +11,14 @@
 //
 
 type Config = {
-	// This is where the factor graph .json file lives. This can be changed to
-	// load a different factor graph.
-	data_filename: string
+	// This contains the directory where data files found in data_filenames
+	// (below) live.
+	data_dir: string
+
+	// This contains the file name of a .json file, the contents of which
+	// should be a list of factor graph .json files names (without directory or
+	// ".json" extension, for autocomplete).
+	data_filenames: string
 
 	size: {
 		// The radius of an RV node.

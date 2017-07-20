@@ -192,18 +192,17 @@ function build(config, data) {
         .enter().append('text')
         .attr('class', textclass)
         .text(nodename);
-    let nodeSelection = svg.append("g")
+    let node = svg.append("g")
         .attr("class", "nodes")
         .selectAll("circle")
-        .data(data.nodes.filter(nodetype('rv')));
-    let node = nodeSelection.enter().append("circle")
+        .data(data.nodes.filter(nodetype('rv')))
+        .enter().append("circle")
         .attr("r", config.size.rv)
         .attr("fill", colorize)
         .call(d3.drag()
         .on("start", dragstarted)
         .on("drag", dragged)
         .on("end", dragended));
-    // nodeSelection.exit().remove();
     let fac = svg.append("g")
         .attr("class", "facs")
         .selectAll("rect")
@@ -273,29 +272,72 @@ function build(config, data) {
 //
 /// <reference path="config.ts" />
 /// <reference path="graph.ts" />
+// Constants
+let SVG_ELEMENT_ID = 'fg-svg';
+let USER_INPUT_ID = 'userInput';
+let SUGGESTIONS_ELEMENT_ID = 'suggestions';
+let CONFIG_FILE = 'data/config/default.json';
+// Globals (sorry).
 let cacheConfig;
-// preload is called once the config file is loaded. It extracts the data file
-// to load and then launches the process of loading the factor graph and
-// building it.
-function preload(config) {
-    // Load the data at the config-specified path. Pass along the config and the
-    // loaded data to the build(...) function to construct the graph.
+let cacheFactorgraphFns = [];
+/**
+ * Extracts general config and list of factorgraph file names. Calls preload.
+ * @param config
+ */
+function prepreload(config) {
     cacheConfig = config;
-    d3.json(config.data_filename, build.bind(null, config));
+    d3.json(config.data_filenames, preload);
 }
-// remove everything from the svg
+/**
+ * Saves the list of factor graph file names.
+ * @param factorgraphFns
+ */
+function preload(factorgraphFns) {
+    cacheFactorgraphFns = factorgraphFns;
+}
+/**
+ * Removes everything from within the svg.
+ */
 function destroy() {
-    // destroy all svg children
-    let svg = document.getElementById("fg-svg");
+    let svg = document.getElementById(SVG_ELEMENT_ID);
     while (svg.firstChild) {
         svg.removeChild(svg.firstChild);
     }
 }
-// call to load a new one
-function load() {
+/**
+ * Loads factor graph found in `fn`.
+ * @param fn
+ */
+function load(fn) {
     destroy();
-    let fn = 'data/examples/05-complex-weight-king_vs_ship.json';
     d3.json(fn, build.bind(null, cacheConfig));
 }
+/**
+ * Called every time the user text box changes its content.
+ */
+function userTypes() {
+    let inp = document.getElementById(USER_INPUT_ID).value;
+    // Prefix filter. Don't show anything with blank input
+    let optsStr = '';
+    if (inp.length > 0) {
+        optsStr = cacheFactorgraphFns.filter(fn => fn.startsWith(inp)).join(' ');
+    }
+    // Fill suggestions with text.
+    // console.log('user input: "' + inp + '"');
+    // console.log('options matched: ' + optsStr);
+    let sug = document.getElementById(SUGGESTIONS_ELEMENT_ID);
+    sug.innerText = optsStr;
+}
+/**
+ * Called when the user submits the text box (presses enter or clicks button).
+ */
+function userSubmits() {
+    let inp = document.getElementById(USER_INPUT_ID).value;
+    if (cacheFactorgraphFns.indexOf(inp) != -1) {
+        load(cacheConfig.data_dir + inp + '.json');
+    }
+    // always return false so that we don't do a POST
+    return false;
+}
 // execution starts here
-d3.json('data/config/default.json', preload);
+d3.json(CONFIG_FILE, prepreload);

@@ -60,7 +60,6 @@ function build(config: Config, data: {nodes: any[], links: any[], stats: any}): 
 	// structure.
 	let appeneder = appendText(svg);
 	if (data.stats) {
-		appeneder('correct', data.stats.correct)
 		appeneder('random variables', data.stats.n_rvs)
 		appeneder('factors', data.stats.n_facs)
 		appeneder('focus', data.stats.focus)

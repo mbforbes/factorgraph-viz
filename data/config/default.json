@@ -1,5 +1,6 @@
 {
-    "data_filename": "data/examples/07-complex-size-threw_d.json",
+    "data_dir": "data/examples/",
+    "data_filenames": "data/examples/options.json",
     "size": {
         "rv": 8,
         "factor": 8

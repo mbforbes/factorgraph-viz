@@ -20,3 +20,7 @@
 .factext {
 	font-size: 0.7em;
 }
+
+p#suggestions {
+	color: grey;
+}
