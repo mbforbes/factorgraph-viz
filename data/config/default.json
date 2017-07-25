@@ -1,6 +1,9 @@
 {
     "data_dir": "data/examples/",
     "data_filenames": "data/options/example-list.json",
+    "startup_filename": "07-complex-size-threw_d",
+    "display_prefix": "Factor graph: ",
+    "autocomplete_limit": 50,
     "size": {
         "rv": 8,
         "factor": 8

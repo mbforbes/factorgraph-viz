@@ -15,10 +15,20 @@ type Config = {
 	// (below) live.
 	data_dir: string
 
-	// This contains the file name of a .json file, the contents of which
-	// should be a list of factor graph .json files names (without directory or
-	// ".json" extension, for autocomplete).
+	// This contains the file name of a .json file (relative to data_dir), the
+	// contents of which should be a list of factor graph .json files names
+	// (without directory or ".json" extension, for autocomplete).
 	data_filenames: string
+
+	// The filename of a .json file (also relative to data_dir) to load upon
+	// startup. If empty, will simply not load a file upon startup.
+	startup_filename: string
+
+	// The limit of the number of autocomplete entries to show.
+	autocomplete_limit: number
+
+	// This is displayed before any factor graph in the visualized header.
+	display_prefix: string
 
 	size: {
 		// The radius of an RV node.

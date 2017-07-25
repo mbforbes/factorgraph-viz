@@ -21,7 +21,12 @@
 	font-size: 0.7em;
 }
 
-button.suggestion {	
+#suggestionNotice {
+	font-weight: bold;
+	visibility: hidden;
+}
+
+button.suggestion {
 	background-color: lightgray;
 	margin: 5px;
 	padding: 5px;
@@ -31,5 +36,17 @@ button.suggestion {
 
 button.suggestion:hover {
 	background-color: lightslategray;
+	color: white;
 	cursor: pointer;
+}
+
+svg {
+	border: 1px solid black;
+}
+
+p.limited {
+	color: slategray;
+	font-style: italic;
+	display: inline-block;
+	padding: 4px;
 }
