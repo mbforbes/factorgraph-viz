@@ -35,16 +35,33 @@ provided script requires python and creates a server on port 8000.
 ```
 
 Visiting `localhost:8000` will show `index.html`. The code loads the config file
-`data/config/default.json`, which specifies the factor graph to use:
+`data/config/default.json`, which in turn specifics where to look for factor
+graphs:
 
-```json
+```js
 {
-  "data_filename": "data/examples/07-complex-size-threw_d.json",
-  // ...
+    // This is where factorgraph files are located. It can be a local directory
+    // (like this) or the URL of a directory.
+    "data_dir": "data/examples/",
+
+    // This is a file (again, local or remote) that contains an array of
+    // strings. Each string should be the name of a .json file (without the
+    // .json extension) that lives in  `data_dir`. These are the factor graphs
+    // available to load.
+    "data_filenames": "data/options/example-list.json",
+
+    // This is a file to load on startup. It should be relative to `data_dir`
+    // and without the .json extension (just like the entries found in
+    // `data_filename`)
+    "startup_filename": "07-complex-size-threw_d",
+
+    // (config continues ...)
 }
 ```
 
-Edit that value to load a different factor graph.
+**New:** The frontend provides autocomplete for strings (factor graph names)
+found in the `data_filenames` list. The autocomplete suggestions are clickable,
+which will immediately load the corresponding factor graph.
 
 ## Factor graph format
 
@@ -156,16 +173,17 @@ simple to complex.
 ## Customization
 
 There are three places to configure `factorgraph-viz` without recompiling it:
-(1) in the config JSON file (found by default in `data/config/default.json`),
-(2) the CSS file (found by default in `css/default.css`), (3) the HTML file
-(`index.html`).
+
+1.  in the config JSON file (found by default in `data/config/default.json`)
+2.  the CSS file (found by default in `css/default.css`)
+3.  the HTML file (`index.html`)
 
 
-### `data/config/default.json`
+### 1. `data/config/default.json`
 
-This file is where all of the configuration is loaded. It specifies which factor
-graph JSON file to load, how large to render random variables and factors, the
-strength and location of the positioning forces that alter the layout of the
+This file is where all of the configuration is loaded. It specifies where factor
+graph JSON files can be found, how large to render random variables and factors,
+the strength and location of the positioning forces that alter the layout of the
 factor graph, and the colorization scheme that is applied when the `weights`
 property is provided.
 
@@ -173,28 +191,26 @@ More detail is given about the configuration options at what they mean in the
 Typescript type that loads this object, which is located in
 [`src/config.ts`](https://github.com/mbforbes/factorgraph-viz/blob/master/src/config.ts).
 
-### `css/default.css`
+### 2. `css/default.css`
 
 Due to how SVG works, CSS cannot control the sizing of the random variables or
 factors (which is why those are defined in the JSON config file). However, the
 various strokes for the factor graph shapes and the all of the font and styling
 options for the text are specified in this CSS file.
 
-### `index.html`
+### 3. `index.html`
 
 The HTML file is minimal, so there are probably only a few reasons why you might
 want to configure it: (1) To change the location of `d3` (by default it is
 expected to be found in `node_modules/d3/build/d3.js`), (2) to change the size
-of the SVG element (by default it is `1024 x 768`), (3) To change the CSS file
+of the SVG element (by default it is `800 x 600`), (3) To change the CSS file
 loaded (by default `css/default.css`), (4) To change the `factorgraph-viz`
 library loaded (by default `build/factorgraph-viz.js`).
 
 ## Contributing
 
 There's plenty of low-hanging fruit to work on if you'd like to contribute to
-this project. Here are some ideas:
-
-- [ ] Allow the frontend to select the factor graph JSON file to load
+this project. Here are a couple ideas:
 
 - [ ] Make an axis-specific [many body
   force](https://github.com/d3/d3-force#forceManyBody). This could help separate
